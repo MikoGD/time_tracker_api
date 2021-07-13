@@ -9,13 +9,21 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+const tableName = "timesheets"
+const columns = "(name)"
+
 func sendErrorResponse(context *gin.Context, err error) {
 	response := TimesheetsErrorResponse{fmt.Sprintf("%s", err)}
 	context.JSON(http.StatusNotFound, response)
 }
 
-func sendSuccessResponse(context *gin.Context, timesheets []Timesheet) {
-	response := TimesheetsSuccessReponse{len(timesheets), timesheets}
+func sendQuerySuccessResponse(context *gin.Context, timesheets []Timesheet) {
+	response := CreateQuerySuccessResponse(timesheets)
+	context.JSON(http.StatusOK, response)
+}
+
+func sendExecSuccessResponse(context *gin.Context, rowsAffected int64) {
+	response := CreateExecSuccessResponse(rowsAffected)
 	context.JSON(http.StatusOK, response)
 }
 
@@ -36,7 +44,7 @@ func parseRows(rows *sql.Rows) ([]Timesheet, error) {
 }
 
 func GetTimesheets(context *gin.Context) {
-	rows, err := utils.SelectFromTable("timesheetss", "*", "")
+	rows, err := utils.SelectFromTable(tableName, "*", "")
 
 	if err != nil {
 		sendErrorResponse(context, err)
@@ -50,5 +58,16 @@ func GetTimesheets(context *gin.Context) {
 		return
 	}
 
-	sendSuccessResponse(context, timesheets)
+	sendQuerySuccessResponse(context, timesheets)
+}
+
+func AddTimesheets(context *gin.Context, values string) {
+	rowsAffected, err := utils.InsertToTable(tableName, columns, values)
+	
+	if err != nil {
+		sendErrorResponse(context, err)
+		return
+	}
+
+	sendExecSuccessResponse(context, rowsAffected)
 }
