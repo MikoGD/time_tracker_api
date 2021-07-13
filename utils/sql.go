@@ -84,43 +84,61 @@ func SelectFromTable(table string, columns string, conditions string) (*sql.Rows
 	return rows, nil
 }
 
-func InsertToTable(db *sql.DB, table string, columns string, values string) *sql.Rows {
+func InsertToTable(table string, columns string, values string) (int64, error) {
 	statement := Statement{table, columns, "", values}
 	insertStatement := statement.CreateInsertStatement()
 
-	rows, err := db.Query(insertStatement)
+	result, err := db.Exec(insertStatement)
 
 	if err != nil {
-		log.Fatalf("Could not execute query %s, error: %q", insertStatement, err)
+		return 0, err
 	}
 
-	return rows
+	rowsAffected, err := result.RowsAffected()
+
+	if err != nil {
+		return 0, err
+	}
+
+	return rowsAffected, nil
 }
 
-func DeleteFromTable(db *sql.DB, table string, conditions string) *sql.Rows {
+func DeleteFromTable(db *sql.DB, table string, conditions string) (int64, error) {
 	statement := Statement{table, "", conditions, ""}
 	deleteStatement := statement.CreateInsertStatement()
 
-	rows, err := db.Query(deleteStatement)
+	result, err := db.Exec(deleteStatement)
 
 	if err != nil {
-		log.Fatalf("Could not execute query %s, error: %q", deleteStatement, err)
+		return 0, err
 	}
 
-	return rows
+	rowsAffected, err := result.RowsAffected()
+
+	if err != nil {
+		return 0, err
+	}
+
+	return rowsAffected, nil
 }
 
-func UpdateRowInTable(db *sql.DB, table string, columns string, conditions string) *sql.Rows {
+func UpdateRowInTable(db *sql.DB, table string, columns string, conditions string) (int64, error) {
 	statement := Statement{table, columns, conditions, ""}
 	updateStatement := statement.CreateInsertStatement()
 
-	rows, err := db.Query(updateStatement)
+	result, err := db.Exec(updateStatement)
 
 	if err != nil {
-		log.Fatalf("Could not execute query %s, error: %q", updateStatement, err)
+		return 0, err
 	}
 
-	return rows
+	rowsAffected, err := result.RowsAffected()
+
+	if err != nil {
+		return 0, err
+	}
+
+	return rowsAffected, nil
 }
 
 func loadEnvFile() {
