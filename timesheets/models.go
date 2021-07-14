@@ -5,6 +5,10 @@ type Timesheet struct {
 	Name string
 }
 
+type TimesheetRequestBody struct {
+	Name string `json:"name" binding:"required alpha`
+}
+
 type TimesheetsSuccessReponse struct {
 	Count int64
 	Data []Timesheet

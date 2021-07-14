@@ -10,7 +10,7 @@ import (
 )
 
 const tableName = "timesheets"
-const columns = "(name)"
+const columns = "(timesheet_name)"
 
 func sendErrorResponse(context *gin.Context, err error) {
 	response := TimesheetsErrorResponse{fmt.Sprintf("%s", err)}
@@ -43,6 +43,17 @@ func parseRows(rows *sql.Rows) ([]Timesheet, error) {
 	return timesheets, nil
 }
 
+func parseRequestBody(context *gin.Context) string {
+	var timesheet TimesheetRequestBody
+
+	if err := context.Bind(&timesheet); err != nil {
+		sendErrorResponse(context, err)
+		return ""
+	}
+
+	return fmt.Sprintf("('%s')", utils.EscapeString(timesheet.Name))
+}
+
 func GetTimesheets(context *gin.Context) {
 	rows, err := utils.SelectFromTable(tableName, "*", "")
 
@@ -61,7 +72,13 @@ func GetTimesheets(context *gin.Context) {
 	sendQuerySuccessResponse(context, timesheets)
 }
 
-func AddTimesheets(context *gin.Context, values string) {
+func AddTimesheets(context *gin.Context) {
+	values := parseRequestBody(context)
+
+	if values == "" {
+		return
+	}
+
 	rowsAffected, err := utils.InsertToTable(tableName, columns, values)
 	
 	if err != nil {
