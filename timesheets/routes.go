@@ -5,8 +5,14 @@ import (
 )
 
 func SetupTimesheetsRoutes(router *gin.Engine) {
-	v1 := router.Group("v1") 
+	v1 := router.Group("v1")
+	{
+		timesheetRouteGroup := v1.Group("/timesheets")
+		{
+			go timesheetRouteGroup.GET("", GetTimesheets)
+			go timesheetRouteGroup.POST("", AddTimesheets)
 
-	go v1.GET("/timesheets", GetTimesheets)
-	go v1.POST("/timesheets", AddTimesheets)
+			go timesheetRouteGroup.GET("/:id", GetTimesheet)
+		}
+	}
 }

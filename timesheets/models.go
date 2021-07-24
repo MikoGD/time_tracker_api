@@ -1,12 +1,12 @@
 package timesheets
 
 type Timesheet struct {
-	Id string
-	Name string
+	Id string `json:"id" binding:"numeric"`
+	Name string `json:"name" binding:"alpha"`
 }
 
 type TimesheetRequestBody struct {
-	Name string `json:"name" binding:"required alpha`
+	Timesheets []Timesheet `json:"timesheets"`
 }
 
 type TimesheetsSuccessReponse struct {

@@ -43,15 +43,25 @@ func parseRows(rows *sql.Rows) ([]Timesheet, error) {
 	return timesheets, nil
 }
 
-func parseRequestBody(context *gin.Context) string {
-	var timesheet TimesheetRequestBody
+func parseRequestBodyForValues(context *gin.Context) string {
+	var timesheets TimesheetRequestBody
 
-	if err := context.Bind(&timesheet); err != nil {
+	if err := context.ShouldBindJSON(&timesheets); err != nil {
 		sendErrorResponse(context, err)
 		return ""
 	}
 
-	return fmt.Sprintf("('%s')", utils.EscapeString(timesheet.Name))
+	values := ""
+
+	for i, timesheet := range timesheets.Timesheets {
+		if i < len(timesheets.Timesheets) - 1 {
+			values += fmt.Sprintf("('%s'), ", timesheet.Name)
+		} else {
+			values += fmt.Sprintf("('%s')", timesheet.Name)
+		}
+	}
+
+	return values
 }
 
 func GetTimesheets(context *gin.Context) {
@@ -72,8 +82,30 @@ func GetTimesheets(context *gin.Context) {
 	sendQuerySuccessResponse(context, timesheets)
 }
 
+func GetTimesheet(context *gin.Context) {
+	id := context.Param("id")
+
+	condition := fmt.Sprintf("timesheet_id=%s", id)
+
+	rows, err := utils.SelectFromTable(tableName, "*", condition)
+
+	if err != nil {
+		sendErrorResponse(context, err)
+		return
+	}
+
+	timesheets, err := parseRows(rows)
+
+	if err != nil {
+		sendErrorResponse(context, err)
+		return
+	}
+
+	sendQuerySuccessResponse(context, timesheets)
+}
+
 func AddTimesheets(context *gin.Context) {
-	values := parseRequestBody(context)
+	values := parseRequestBodyForValues(context)
 
 	if values == "" {
 		return
