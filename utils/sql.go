@@ -103,9 +103,9 @@ func InsertToTable(table string, columns string, values string) (int64, error) {
 	return rowsAffected, nil
 }
 
-func DeleteFromTable(db *sql.DB, table string, conditions string) (int64, error) {
+func DeleteFromTable(table string, conditions string) (int64, error) {
 	statement := Statement{table, "", conditions, ""}
-	deleteStatement := statement.CreateInsertStatement()
+	deleteStatement := statement.CreateDeleteStatement()
 
 	result, err := db.Exec(deleteStatement)
 

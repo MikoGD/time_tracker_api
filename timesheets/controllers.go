@@ -120,3 +120,42 @@ func AddTimesheets(context *gin.Context) {
 
 	sendExecSuccessResponse(context, rowsAffected)
 }
+
+
+func createDeleteConditions(context *gin.Context) (string, error) {
+	var requestBody TimesheetRequestBody	
+
+	if err := context.ShouldBindJSON(&requestBody); err != nil {
+		return "", err
+	}
+
+	idsString := "("
+
+	for i, id := range requestBody.Ids {
+		if i < len(requestBody.Ids) - 1 {
+			idsString += fmt.Sprintf("%d, ", id)
+		} else {
+			idsString += fmt.Sprintf("%d)", id)
+		}
+	}
+
+	return fmt.Sprintf("timesheet_id IN %s", idsString), nil
+}
+
+func RemoveTimesheets(context *gin.Context) {
+	condition, err := createDeleteConditions(context)
+
+	if err != nil {
+		sendErrorResponse(context, err)
+		return
+	}
+
+	rowsAffected, err := utils.DeleteFromTable(tableName, condition)
+
+	if err != nil {
+		sendErrorResponse(context, err)
+		return
+	}
+
+	sendExecSuccessResponse(context, rowsAffected)
+}

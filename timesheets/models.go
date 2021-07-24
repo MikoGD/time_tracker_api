@@ -7,6 +7,7 @@ type Timesheet struct {
 
 type TimesheetRequestBody struct {
 	Timesheets []Timesheet `json:"timesheets"`
+	Ids []uint `json:"ids"`
 }
 
 type TimesheetsSuccessReponse struct {
