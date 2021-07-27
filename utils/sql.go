@@ -11,7 +11,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-var db *sql.DB;
+var DB *sql.DB;
 
 func ConnectToDatabaase() {
 	loadEnvFile()
@@ -27,21 +27,21 @@ func ConnectToDatabaase() {
 
 	var err error
 
-	db, err = sql.Open("mysql", cfg.FormatDSN())
+	DB, err = sql.Open("mysql", cfg.FormatDSN())
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	pingErr := db.Ping()
+	pingErr := DB.Ping()
 
 	if pingErr != nil {
 		log.Fatal(pingErr)
 	}
 
-	db.SetConnMaxLifetime(time.Minute * 3)
-	db.SetMaxOpenConns(5)
-	db.SetMaxIdleConns(5)
+	DB.SetConnMaxLifetime(time.Minute * 3)
+	DB.SetMaxOpenConns(5)
+	DB.SetMaxIdleConns(5)
 }
 
 type Statement struct {
@@ -75,7 +75,7 @@ func SelectFromTable(table string, columns string, conditions string) (*sql.Rows
 	statement := Statement{table, columns, conditions, ""}
 	selectStatement := statement.CreateSelectStatement()
 
-	rows, err := db.Query(selectStatement)
+	rows, err := DB.Query(selectStatement)
 
 	if err != nil {
 		return nil, err
@@ -85,10 +85,11 @@ func SelectFromTable(table string, columns string, conditions string) (*sql.Rows
 }
 
 func InsertToTable(table string, columns string, values string) (int64, error) {
+	fmt.Println(columns)
 	statement := Statement{table, columns, "", values}
 	insertStatement := statement.CreateInsertStatement()
 
-	result, err := db.Exec(insertStatement)
+	result, err := DB.Exec(insertStatement)
 
 	if err != nil {
 		return 0, err
@@ -107,7 +108,7 @@ func DeleteFromTable(table string, conditions string) (int64, error) {
 	statement := Statement{table, "", conditions, ""}
 	deleteStatement := statement.CreateDeleteStatement()
 
-	result, err := db.Exec(deleteStatement)
+	result, err := DB.Exec(deleteStatement)
 
 	if err != nil {
 		return 0, err
@@ -122,11 +123,12 @@ func DeleteFromTable(table string, conditions string) (int64, error) {
 	return rowsAffected, nil
 }
 
-func UpdateRowInTable(db *sql.DB, table string, columns string, conditions string) (int64, error) {
+func UpdateRowInTable(transaction *sql.Tx, table string, columns string, conditions string) (int64, error) {
 	statement := Statement{table, columns, conditions, ""}
-	updateStatement := statement.CreateInsertStatement()
+	updateStatement := statement.CreateUpdateStatement()
+	fmt.Println(updateStatement);
 
-	result, err := db.Exec(updateStatement)
+	result, err := transaction.Exec(updateStatement)
 
 	if err != nil {
 		return 0, err

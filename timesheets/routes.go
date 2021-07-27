@@ -14,6 +14,7 @@ func SetupTimesheetsRoutes(router *gin.Engine) {
 			go timesheetRouteGroup.DELETE("", RemoveTimesheets)
 
 			go timesheetRouteGroup.GET("/:id", GetTimesheet)
+			go timesheetRouteGroup.PUT("/:id", UpdateTimesheets)
 		}
 	}
 }

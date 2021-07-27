@@ -43,7 +43,7 @@ func parseRows(rows *sql.Rows) ([]Timesheet, error) {
 	return timesheets, nil
 }
 
-func parseRequestBodyForValues(context *gin.Context) string {
+func parseRequestBodyForInsertValues(context *gin.Context) string {
 	var timesheets TimesheetRequestBody
 
 	if err := context.ShouldBindJSON(&timesheets); err != nil {
@@ -62,6 +62,16 @@ func parseRequestBodyForValues(context *gin.Context) string {
 	}
 
 	return values
+}
+
+func parseRequestBodyForTimesheetsUpdates(context *gin.Context) ([]Timesheet, error) {
+	var requestBody TimesheetRequestBody
+
+	if err := context.ShouldBindJSON(&requestBody); err != nil {
+		return nil, err
+	}
+
+	return requestBody.Timesheets, nil
 }
 
 func GetTimesheets(context *gin.Context) {
@@ -105,7 +115,7 @@ func GetTimesheet(context *gin.Context) {
 }
 
 func AddTimesheets(context *gin.Context) {
-	values := parseRequestBodyForValues(context)
+	values := parseRequestBodyForInsertValues(context)
 
 	if values == "" {
 		return
@@ -158,4 +168,41 @@ func RemoveTimesheets(context *gin.Context) {
 	}
 
 	sendExecSuccessResponse(context, rowsAffected)
+}
+
+func UpdateTimesheets(context *gin.Context) {
+	id := context.Param("id")
+
+	timesheets, err := parseRequestBodyForTimesheetsUpdates(context)
+
+	if err != nil {
+		sendErrorResponse(context, err)
+		return
+	}
+
+	transaction, err := utils.DB.Begin()
+
+	if err != nil {
+		sendErrorResponse(context, err)
+		return
+	}
+
+	var totalRowsAffected int64 = 0
+	for _, timesheet := range timesheets {
+		rowsAffected, err := utils.UpdateRowInTable(transaction, tableName, fmt.Sprintf("timesheet_name='%s'", timesheet.Name), fmt.Sprintf("timesheet_id=%s", id))
+
+		totalRowsAffected += rowsAffected
+
+		if err != nil {
+			transaction.Rollback()
+			sendErrorResponse(context, err)
+		}
+	}
+
+	if err := transaction.Commit(); err != nil {
+		sendErrorResponse(context, err)
+		return
+	}
+
+	sendExecSuccessResponse(context, totalRowsAffected)
 }
