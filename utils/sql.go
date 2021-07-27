@@ -11,17 +11,17 @@ import (
 	"github.com/joho/godotenv"
 )
 
-var DB *sql.DB;
+var DB *sql.DB
 
 func ConnectToDatabaase() {
 	loadEnvFile()
 
 	cfg := mysql.Config{
-		Addr: "192.168.1.32:3306",
-		Net: "tcp",
-		User: getEnvVariable("USERNAME"),
-		Passwd: getEnvVariable("PASSWORD"),
-		DBName: getEnvVariable("DATABASE"),
+		Addr:                 "192.168.1.32:3306",
+		Net:                  "tcp",
+		User:                 getEnvVariable("USERNAME"),
+		Passwd:               getEnvVariable("PASSWORD"),
+		DBName:               getEnvVariable("DATABASE"),
 		AllowNativePasswords: true,
 	}
 
@@ -45,10 +45,10 @@ func ConnectToDatabaase() {
 }
 
 type Statement struct {
-	table string
-	columns string
+	table      string
+	columns    string
 	conditions string
-	values string
+	values     string
 }
 
 func (statement *Statement) CreateSelectStatement() string {
@@ -126,7 +126,7 @@ func DeleteFromTable(table string, conditions string) (int64, error) {
 func UpdateRowInTable(transaction *sql.Tx, table string, columns string, conditions string) (int64, error) {
 	statement := Statement{table, columns, conditions, ""}
 	updateStatement := statement.CreateUpdateStatement()
-	fmt.Println(updateStatement);
+	fmt.Println(updateStatement)
 
 	result, err := transaction.Exec(updateStatement)
 
