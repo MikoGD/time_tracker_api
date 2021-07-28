@@ -13,8 +13,10 @@ func main() {
 
 	utils.ConnectToDatabaase()
 
-	timesheets.SetupTimesheetsRoutes(router)
-	rows.SetupTimesheetRowsRoutes(router)
+	v1 := router.Group("v1")
+
+	timesheets.SetupTimesheetsRoutes(v1)
+	rows.SetupTimesheetRowsRoutes(v1)
 
 	router.Run(":8090")
 }
