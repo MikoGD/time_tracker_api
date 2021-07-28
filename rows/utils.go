@@ -50,7 +50,6 @@ func sendExecSuccessResponse(context *gin.Context, rowsAffected int64) {
 }
 
 func sendQuerySuccessResponse(context *gin.Context, timesheetRows []TimesheetRows) {
-	fmt.Println(timesheetRows)
 	response := CreateQuerySuccessResponse(timesheetRows)
 	context.JSON(http.StatusOK, response)
 }

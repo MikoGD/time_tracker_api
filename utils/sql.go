@@ -85,7 +85,6 @@ func SelectFromTable(table string, columns string, conditions string) (*sql.Rows
 }
 
 func InsertToTable(table string, columns string, values string) (int64, error) {
-	fmt.Println(columns)
 	statement := Statement{table, columns, "", values}
 	insertStatement := statement.CreateInsertStatement()
 
@@ -126,7 +125,6 @@ func DeleteFromTable(table string, conditions string) (int64, error) {
 func UpdateRowInTable(transaction *sql.Tx, table string, columns string, conditions string) (int64, error) {
 	statement := Statement{table, columns, conditions, ""}
 	updateStatement := statement.CreateUpdateStatement()
-	fmt.Println(updateStatement)
 
 	result, err := transaction.Exec(updateStatement)
 

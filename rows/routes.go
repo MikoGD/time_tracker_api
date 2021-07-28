@@ -10,6 +10,10 @@ func SetupTimesheetRowsRoutes(router *gin.Engine) {
 		timesheetRowsRouteGroup := v1.Group("/rows")
 		{
 			go timesheetRowsRouteGroup.GET("", GetRows)
+
+			go timesheetRowsRouteGroup.GET("/:id", GetRow)
+
+			go timesheetRowsRouteGroup.GET("/timesheet/:id", GetRowByTimesheet)
 		}
 	}
 }
