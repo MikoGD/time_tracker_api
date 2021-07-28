@@ -50,7 +50,7 @@ func GetRow(context *gin.Context) {
 func GetRowByTimesheet(context *gin.Context) {
 	id := context.Param("id")
 
-	condition := fmt.Sprintf("WHERE timesheet_id=%s", id)
+	condition := fmt.Sprintf("timesheet_id=%s", id)
 
 	rows, err := utils.SelectFromTable(tableName, "*", condition)
 
