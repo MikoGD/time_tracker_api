@@ -15,6 +15,7 @@ func SetupTimesheetRowsRoutes(router *gin.RouterGroup) {
 		timesheetRouteGroup := rowsRouteGroup.Group("/timesheet")
 		{
 			go timesheetRouteGroup.GET("/:id", GetRowByTimesheet)
+			go timesheetRouteGroup.POST("/:id", AddRowToTimesheet)
 		}
 	}
 }

@@ -36,6 +36,26 @@ func CreateQuerySuccessResponse(timesheetRows []TimesheetRows) TimesheetRowsSucc
 	return TimesheetRowsSuccessReponse{int64(len(timesheetRows)), timesheetRows}
 }
 
+func ParseRequestBodyForInsertValues(context *gin.Context) (string, error) {
+	var rows TimesheetRowsRequestBody
+
+	if err := context.ShouldBindJSON(&rows); err != nil {
+		return "", err
+	}
+
+	values := ""
+
+	for i, row := range rows.TimesheetRows {
+		if i < len(rows.TimesheetRows)-1 {
+			values += fmt.Sprintf("('%s', %d, %d, %d, %d), ", row.Description, row.StartTime, row.EndTime, row.ElapsedTime, row.TimesheetId)
+		} else {
+			values += fmt.Sprintf("('%s', %d, %d, %d, %d);", row.Description, row.StartTime, row.EndTime, row.ElapsedTime, row.TimesheetId)
+		}
+	}
+
+	return values, nil
+}
+
 func parseRows(rows *sql.Rows) ([]TimesheetRows, error) {
 	var timesheetRows []TimesheetRows
 

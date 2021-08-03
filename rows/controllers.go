@@ -7,6 +7,24 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func AddRowToTimesheet(context *gin.Context) {
+	values, err := ParseRequestBodyForInsertValues(context)
+
+	if err != nil {
+		sendErrorResponse(context, err)
+		return
+	}
+
+	rowsAffected, err := utils.InsertToTable(tableName, columns, values)
+
+	if err != nil {
+		sendErrorResponse(context, err)
+		return
+	}
+
+	sendExecSuccessResponse(context, rowsAffected)
+}
+
 func GetRowByTimesheet(context *gin.Context) {
 	id := context.Param("id")
 
