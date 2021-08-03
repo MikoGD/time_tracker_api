@@ -5,12 +5,16 @@ import (
 )
 
 func SetupTimesheetRowsRoutes(router *gin.RouterGroup) {
-	timesheetRowsRouteGroup := router.Group("/rows")
+	rowsRouteGroup := router.Group("/rows")
 	{
-		go timesheetRowsRouteGroup.GET("", GetRows)
+		go rowsRouteGroup.GET("", GetRows)
+		go rowsRouteGroup.DELETE("", RemoveRowByIds)
 
-		go timesheetRowsRouteGroup.GET("/:id", GetRow)
+		go rowsRouteGroup.GET("/:id", GetRow)
 
-		go timesheetRowsRouteGroup.GET("/timesheet/:id", GetRowByTimesheet)
+		timesheetRouteGroup := rowsRouteGroup.Group("/timesheet")
+		{
+			go timesheetRouteGroup.GET("/:id", GetRowByTimesheet)
+		}
 	}
 }

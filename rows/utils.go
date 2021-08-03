@@ -8,6 +8,26 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func createDeleteConditions(context *gin.Context) (string, error) {
+	var requestBody TimesheetRowsRequestBody
+
+	if err := context.ShouldBindJSON(&requestBody); err != nil {
+		return "", err
+	}
+
+	idsString := "("
+
+	for i, id := range requestBody.Ids {
+		if i < len(requestBody.Ids)-1 {
+			idsString += fmt.Sprintf("%d, ", id)
+		} else {
+			idsString += fmt.Sprintf("%d)", id)
+		}
+	}
+
+	return fmt.Sprintf("row_id IN %s", idsString), nil
+}
+
 func CreateExecSuccessResponse(count int64) TimesheetRowsSuccessReponse {
 	return TimesheetRowsSuccessReponse{count, make([]TimesheetRows, 0)}
 }

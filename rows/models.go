@@ -1,22 +1,22 @@
 package rows
 
 type TimesheetRows struct {
-	Id string `json:"id" binding:"numeric"`
+	Id          uint   `json:"id"`
 	Description string `json:"description" binding:"alpha"`
-	StartTime uint `json:"startTime"`
-	EndTime uint `json:"endTime"`
-	ElapsedTime uint `json:"elapsedTime"`
-	TimesheetId uint `json:"timesheetId"`
+	StartTime   uint   `json:"startTime"`
+	EndTime     uint   `json:"endTime"`
+	ElapsedTime uint   `json:"elapsedTime"`
+	TimesheetId uint   `json:"timesheetId"`
 }
 
 type TimesheetRowsRequestBody struct {
 	TimesheetRows []TimesheetRows `json:"timesheetRows"`
-	Ids []uint `json:"ids"`
+	Ids           []uint          `json:"ids"`
 }
 
 type TimesheetRowsSuccessReponse struct {
 	Count int64
-	Data []TimesheetRows
+	Data  []TimesheetRows
 }
 
 type TimesheetRowsErrorResponse struct {
