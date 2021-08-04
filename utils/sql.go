@@ -56,19 +56,19 @@ func (statement *Statement) createSelectStatement() string {
 		return fmt.Sprintf("SELECT %s FROM %s", statement.columns, statement.table)
 	}
 
-	return fmt.Sprintf("SELECT %s FROM %s WHERE %s", statement.columns, statement.table, escapeString(statement.conditions))
+	return fmt.Sprintf("SELECT %s FROM %s WHERE %s", statement.columns, statement.table, statement.conditions)
 }
 
 func (statement *Statement) createInsertStatement() string {
-	return fmt.Sprintf("INSERT INTO %s %s VALUES %s", statement.table, statement.columns, escapeString(statement.values))
+	return fmt.Sprintf("INSERT INTO %s %s VALUES %s", statement.table, statement.columns, statement.values)
 }
 
 func (statement *Statement) createDeleteStatement() string {
-	return fmt.Sprintf("DELETE FROM %s WHERE %s", statement.table, escapeString(statement.conditions))
+	return fmt.Sprintf("DELETE FROM %s WHERE %s", statement.table, statement.conditions)
 }
 
 func (statement *Statement) createUpdateStatement() string {
-	return fmt.Sprintf("UPDATE %s SET %s WHERE %s", statement.table, escapeString(statement.columns), escapeString(statement.conditions))
+	return fmt.Sprintf("UPDATE %s SET %s WHERE %s", statement.table, statement.columns, statement.conditions)
 }
 
 func SelectFromTable(table string, columns string, conditions string) (*sql.Rows, error) {

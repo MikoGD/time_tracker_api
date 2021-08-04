@@ -109,3 +109,52 @@ func removeRowByIds(context *gin.Context) {
 
 	sendExecSuccessResponse(context, rowsAffected)
 }
+
+func createUpdateColumns(timesheetRow TimesheetRow) string {
+	return fmt.Sprintf(
+		"row_description='%s', row_start_time=%d, row_end_time=%d, row_elapsed_time=%d",
+		timesheetRow.Description,
+		timesheetRow.StartTime,
+		timesheetRow.EndTime,
+		timesheetRow.ElapsedTime,
+	)
+}
+
+func updateRowInTimesheet(context *gin.Context) {
+	timesheetId := context.Param("id")
+
+	timesheetRows, err := parseRequestBodyForUpdateValues(context)
+
+	if err != nil {
+		sendErrorResponse(context, err)
+		return
+	}
+
+	transaction, err := utils.DB.Begin()
+
+	if err != nil {
+		sendErrorResponse(context, err)
+		return
+	}
+
+	var totalRowsAffected int64 = 0
+
+	for _, timesheetRow := range timesheetRows {
+		rowsAffected, err := utils.UpdateRowInTable(transaction, tableName, createUpdateColumns(timesheetRow), fmt.Sprintf("row_id=%d AND timesheet_id=%s", timesheetRow.Id, timesheetId))
+
+		if err != nil {
+			transaction.Rollback()
+			sendErrorResponse(context, err)
+			return
+		}
+
+		totalRowsAffected += rowsAffected
+	}
+
+	if err := transaction.Commit(); err != nil {
+		sendErrorResponse(context, err)
+		return
+	}
+
+	sendExecSuccessResponse(context, totalRowsAffected)
+}

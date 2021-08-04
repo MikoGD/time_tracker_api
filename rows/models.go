@@ -1,6 +1,6 @@
 package rows
 
-type TimesheetRows struct {
+type TimesheetRow struct {
 	Id          uint   `json:"id"`
 	Description string `json:"description" binding:"alpha"`
 	StartTime   uint   `json:"startTime"`
@@ -10,13 +10,13 @@ type TimesheetRows struct {
 }
 
 type TimesheetRowsRequestBody struct {
-	TimesheetRows []TimesheetRows `json:"timesheetRows"`
-	Ids           []uint          `json:"ids"`
+	TimesheetRows []TimesheetRow `json:"timesheetRows"`
+	Ids           []uint         `json:"ids"`
 }
 
 type TimesheetRowsSuccessReponse struct {
 	Count int64
-	Data  []TimesheetRows
+	Data  []TimesheetRow
 }
 
 type TimesheetRowsErrorResponse struct {

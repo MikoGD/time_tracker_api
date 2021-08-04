@@ -16,6 +16,7 @@ func SetupTimesheetRowsRoutes(router *gin.RouterGroup) {
 		{
 			go timesheetRouteGroup.GET("/:id", getRowByTimesheet)
 			go timesheetRouteGroup.POST("/:id", addRowToTimesheet)
+			go timesheetRouteGroup.PUT("/:id", updateRowInTimesheet)
 		}
 	}
 }

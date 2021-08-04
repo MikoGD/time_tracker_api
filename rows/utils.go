@@ -29,10 +29,10 @@ func createDeleteConditions(context *gin.Context) (string, error) {
 }
 
 func createExecSuccessResponse(count int64) TimesheetRowsSuccessReponse {
-	return TimesheetRowsSuccessReponse{count, make([]TimesheetRows, 0)}
+	return TimesheetRowsSuccessReponse{count, make([]TimesheetRow, 0)}
 }
 
-func createQuerySuccessResponse(timesheetRows []TimesheetRows) TimesheetRowsSuccessReponse {
+func createQuerySuccessResponse(timesheetRows []TimesheetRow) TimesheetRowsSuccessReponse {
 	return TimesheetRowsSuccessReponse{int64(len(timesheetRows)), timesheetRows}
 }
 
@@ -56,11 +56,21 @@ func parseRequestBodyForInsertValues(context *gin.Context) (string, error) {
 	return values, nil
 }
 
-func parseRows(rows *sql.Rows) ([]TimesheetRows, error) {
-	var timesheetRows []TimesheetRows
+func parseRequestBodyForUpdateValues(context *gin.Context) ([]TimesheetRow, error) {
+	var requestBody TimesheetRowsRequestBody
+
+	if err := context.ShouldBindJSON(&requestBody); err != nil {
+		return nil, err
+	}
+
+	return requestBody.TimesheetRows, nil
+}
+
+func parseRows(rows *sql.Rows) ([]TimesheetRow, error) {
+	var timesheetRows []TimesheetRow
 
 	for rows.Next() {
-		var timesheetRow TimesheetRows
+		var timesheetRow TimesheetRow
 
 		if err := rows.Scan(
 			&timesheetRow.Id,
@@ -89,7 +99,7 @@ func sendExecSuccessResponse(context *gin.Context, rowsAffected int64) {
 	context.JSON(http.StatusOK, response)
 }
 
-func sendQuerySuccessResponse(context *gin.Context, timesheetRows []TimesheetRows) {
+func sendQuerySuccessResponse(context *gin.Context, timesheetRows []TimesheetRow) {
 	response := createQuerySuccessResponse(timesheetRows)
 	context.JSON(http.StatusOK, response)
 }

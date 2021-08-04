@@ -108,6 +108,7 @@ func updateTimesheets(context *gin.Context) {
 		if err != nil {
 			transaction.Rollback()
 			sendErrorResponse(context, err)
+			return
 		}
 	}
 
