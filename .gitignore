@@ -2,3 +2,4 @@
 *.code-workspace
 mock
 main
+.vscode
