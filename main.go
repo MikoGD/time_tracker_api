@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"example.com/time_tracker_api/rows"
 	"example.com/time_tracker_api/timesheets"
 	"example.com/time_tracker_api/utils"
@@ -9,7 +11,16 @@ import (
 )
 
 func main() {
-	router := gin.Default()
+	utils.LoadEnvFile()
+
+	var router *gin.Engine
+
+	if utils.GetEnvVariable("MODE") == "RELEASE" {
+		gin.SetMode(gin.ReleaseMode)
+		router = gin.Default()
+	} else {
+		router = gin.Default()
+	}
 
 	utils.ConnectToDatabaase()
 

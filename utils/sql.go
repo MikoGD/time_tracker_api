@@ -14,14 +14,12 @@ import (
 var DB *sql.DB
 
 func ConnectToDatabaase() {
-	loadEnvFile()
-
 	cfg := mysql.Config{
-		Addr:                 "192.168.1.32:3306",
+		Addr:                 fmt.Sprintf("%s:%s", GetEnvVariable("DB_IP"), GetEnvVariable("DB_PORT")),
 		Net:                  "tcp",
-		User:                 getEnvVariable("USERNAME"),
-		Passwd:               getEnvVariable("PASSWORD"),
-		DBName:               getEnvVariable("DATABASE"),
+		User:                 GetEnvVariable("USERNAME"),
+		Passwd:               GetEnvVariable("PASSWORD"),
+		DBName:               GetEnvVariable("DATABASE"),
 		AllowNativePasswords: true,
 	}
 
@@ -141,7 +139,7 @@ func UpdateRowInTable(transaction *sql.Tx, table string, columns string, conditi
 	return rowsAffected, nil
 }
 
-func loadEnvFile() {
+func LoadEnvFile() {
 	err := godotenv.Load(".env")
 
 	if err != nil {
@@ -149,6 +147,6 @@ func loadEnvFile() {
 	}
 }
 
-func getEnvVariable(key string) string {
+func GetEnvVariable(key string) string {
 	return os.Getenv(key)
 }
