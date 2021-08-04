@@ -7,9 +7,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const tableName = "timesheets"
-const columns = "(timesheet_name)"
-
 func getTimesheets(context *gin.Context) {
 	rows, err := utils.SelectFromTable(tableName, "*", "")
 

@@ -1,5 +1,8 @@
 package timesheets
 
+const tableName = "timesheets"
+const columns = "(timesheet_name)"
+
 type Timesheet struct {
 	Id   string `json:"id" binding:"numeric"`
 	Name string `json:"name" binding:"alpha"`
