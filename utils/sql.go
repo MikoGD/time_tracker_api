@@ -51,29 +51,29 @@ type Statement struct {
 	values     string
 }
 
-func (statement *Statement) CreateSelectStatement() string {
+func (statement *Statement) createSelectStatement() string {
 	if statement.conditions == "" {
 		return fmt.Sprintf("SELECT %s FROM %s", statement.columns, statement.table)
 	}
 
-	return fmt.Sprintf("SELECT %s FROM %s WHERE %s", statement.columns, statement.table, statement.conditions)
+	return fmt.Sprintf("SELECT %s FROM %s WHERE %s", statement.columns, statement.table, escapeString(statement.conditions))
 }
 
-func (statement *Statement) CreateInsertStatement() string {
-	return fmt.Sprintf("INSERT INTO %s %s VALUES %s", statement.table, statement.columns, statement.values)
+func (statement *Statement) createInsertStatement() string {
+	return fmt.Sprintf("INSERT INTO %s %s VALUES %s", statement.table, statement.columns, escapeString(statement.values))
 }
 
-func (statement *Statement) CreateDeleteStatement() string {
-	return fmt.Sprintf("DELETE FROM %s WHERE %s", statement.table, statement.conditions)
+func (statement *Statement) createDeleteStatement() string {
+	return fmt.Sprintf("DELETE FROM %s WHERE %s", statement.table, escapeString(statement.conditions))
 }
 
-func (statement *Statement) CreateUpdateStatement() string {
-	return fmt.Sprintf("UPDATE %s SET %s WHERE %s", statement.table, statement.columns, statement.conditions)
+func (statement *Statement) createUpdateStatement() string {
+	return fmt.Sprintf("UPDATE %s SET %s WHERE %s", statement.table, escapeString(statement.columns), escapeString(statement.conditions))
 }
 
 func SelectFromTable(table string, columns string, conditions string) (*sql.Rows, error) {
 	statement := Statement{table, columns, conditions, ""}
-	selectStatement := statement.CreateSelectStatement()
+	selectStatement := statement.createSelectStatement()
 
 	rows, err := DB.Query(selectStatement)
 
@@ -86,7 +86,7 @@ func SelectFromTable(table string, columns string, conditions string) (*sql.Rows
 
 func InsertToTable(table string, columns string, values string) (int64, error) {
 	statement := Statement{table, columns, "", values}
-	insertStatement := statement.CreateInsertStatement()
+	insertStatement := statement.createInsertStatement()
 
 	result, err := DB.Exec(insertStatement)
 
@@ -105,7 +105,7 @@ func InsertToTable(table string, columns string, values string) (int64, error) {
 
 func DeleteFromTable(table string, conditions string) (int64, error) {
 	statement := Statement{table, "", conditions, ""}
-	deleteStatement := statement.CreateDeleteStatement()
+	deleteStatement := statement.createDeleteStatement()
 
 	result, err := DB.Exec(deleteStatement)
 
@@ -124,7 +124,7 @@ func DeleteFromTable(table string, conditions string) (int64, error) {
 
 func UpdateRowInTable(transaction *sql.Tx, table string, columns string, conditions string) (int64, error) {
 	statement := Statement{table, columns, conditions, ""}
-	updateStatement := statement.CreateUpdateStatement()
+	updateStatement := statement.createUpdateStatement()
 
 	result, err := transaction.Exec(updateStatement)
 

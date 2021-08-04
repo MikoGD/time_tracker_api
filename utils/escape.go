@@ -5,7 +5,7 @@ import (
 	"regexp"
 )
 
-func EscapeString(str string) string {
+func escapeString(str string) string {
 	escapedString := ""
 
 	pattern := regexp.MustCompile(`[^a-zA-Z0-9\s]`)
