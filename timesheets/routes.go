@@ -7,11 +7,11 @@ import (
 func SetupTimesheetsRoutes(router *gin.RouterGroup) {
 	timesheetRouteGroup := router.Group("/timesheets")
 	{
-		go timesheetRouteGroup.GET("", GetTimesheets)
-		go timesheetRouteGroup.POST("", AddTimesheets)
-		go timesheetRouteGroup.DELETE("", RemoveTimesheets)
+		go timesheetRouteGroup.GET("", getTimesheets)
+		go timesheetRouteGroup.POST("", addTimesheets)
+		go timesheetRouteGroup.DELETE("", removeTimesheets)
 
-		go timesheetRouteGroup.GET("/:id", GetTimesheet)
-		go timesheetRouteGroup.PUT("/:id", UpdateTimesheets)
+		go timesheetRouteGroup.GET("/:id", getTimesheet)
+		go timesheetRouteGroup.PUT("/:id", updateTimesheets)
 	}
 }
