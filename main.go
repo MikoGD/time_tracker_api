@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"example.com/time_tracker_api/rows"
 	"example.com/time_tracker_api/timesheets"
 	"example.com/time_tracker_api/utils"
