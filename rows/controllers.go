@@ -7,8 +7,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func AddRowToTimesheet(context *gin.Context) {
-	values, err := ParseRequestBodyForInsertValues(context)
+func addRowToTimesheet(context *gin.Context) {
+	values, err := parseRequestBodyForInsertValues(context)
 
 	if err != nil {
 		sendErrorResponse(context, err)
@@ -25,7 +25,7 @@ func AddRowToTimesheet(context *gin.Context) {
 	sendExecSuccessResponse(context, rowsAffected)
 }
 
-func GetRowByTimesheet(context *gin.Context) {
+func getRowByTimesheet(context *gin.Context) {
 	id := context.Param("id")
 
 	condition := fmt.Sprintf("timesheet_id=%s", id)
@@ -47,7 +47,7 @@ func GetRowByTimesheet(context *gin.Context) {
 	sendQuerySuccessResponse(context, timesheetRows)
 }
 
-func GetRow(context *gin.Context) {
+func getRow(context *gin.Context) {
 	id := context.Param("id")
 
 	condition := fmt.Sprintf("row_id=%s", id)
@@ -69,7 +69,7 @@ func GetRow(context *gin.Context) {
 	sendQuerySuccessResponse(context, timesheetRows)
 }
 
-func GetRows(context *gin.Context) {
+func getRows(context *gin.Context) {
 	rows, err := utils.SelectFromTable(tableName, "*", "")
 
 	if err != nil {
@@ -87,7 +87,7 @@ func GetRows(context *gin.Context) {
 	sendQuerySuccessResponse(context, timesheetRows)
 }
 
-func RemoveRowByIds(context *gin.Context) {
+func removeRowByIds(context *gin.Context) {
 	condition, err := createDeleteConditions(context)
 
 	if err != nil {

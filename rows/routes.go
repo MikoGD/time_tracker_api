@@ -7,15 +7,15 @@ import (
 func SetupTimesheetRowsRoutes(router *gin.RouterGroup) {
 	rowsRouteGroup := router.Group("/rows")
 	{
-		go rowsRouteGroup.GET("", GetRows)
-		go rowsRouteGroup.DELETE("", RemoveRowByIds)
+		go rowsRouteGroup.GET("", getRows)
+		go rowsRouteGroup.DELETE("", removeRowByIds)
 
-		go rowsRouteGroup.GET("/:id", GetRow)
+		go rowsRouteGroup.GET("/:id", getRow)
 
 		timesheetRouteGroup := rowsRouteGroup.Group("/timesheet")
 		{
-			go timesheetRouteGroup.GET("/:id", GetRowByTimesheet)
-			go timesheetRouteGroup.POST("/:id", AddRowToTimesheet)
+			go timesheetRouteGroup.GET("/:id", getRowByTimesheet)
+			go timesheetRouteGroup.POST("/:id", addRowToTimesheet)
 		}
 	}
 }

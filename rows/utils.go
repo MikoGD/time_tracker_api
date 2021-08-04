@@ -28,15 +28,15 @@ func createDeleteConditions(context *gin.Context) (string, error) {
 	return fmt.Sprintf("row_id IN %s", idsString), nil
 }
 
-func CreateExecSuccessResponse(count int64) TimesheetRowsSuccessReponse {
+func createExecSuccessResponse(count int64) TimesheetRowsSuccessReponse {
 	return TimesheetRowsSuccessReponse{count, make([]TimesheetRows, 0)}
 }
 
-func CreateQuerySuccessResponse(timesheetRows []TimesheetRows) TimesheetRowsSuccessReponse {
+func createQuerySuccessResponse(timesheetRows []TimesheetRows) TimesheetRowsSuccessReponse {
 	return TimesheetRowsSuccessReponse{int64(len(timesheetRows)), timesheetRows}
 }
 
-func ParseRequestBodyForInsertValues(context *gin.Context) (string, error) {
+func parseRequestBodyForInsertValues(context *gin.Context) (string, error) {
 	var rows TimesheetRowsRequestBody
 
 	if err := context.ShouldBindJSON(&rows); err != nil {
@@ -85,11 +85,11 @@ func sendErrorResponse(context *gin.Context, err error) {
 }
 
 func sendExecSuccessResponse(context *gin.Context, rowsAffected int64) {
-	response := CreateExecSuccessResponse(rowsAffected)
+	response := createExecSuccessResponse(rowsAffected)
 	context.JSON(http.StatusOK, response)
 }
 
 func sendQuerySuccessResponse(context *gin.Context, timesheetRows []TimesheetRows) {
-	response := CreateQuerySuccessResponse(timesheetRows)
+	response := createQuerySuccessResponse(timesheetRows)
 	context.JSON(http.StatusOK, response)
 }
