@@ -7,22 +7,21 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func getTimesheets(context *gin.Context) {
-	rows, err := utils.SelectFromTable(tableName, "*", "")
+func addTimesheets(context *gin.Context) {
+	values := parseRequestBodyForInsertValues(context)
+
+	if values == "" {
+		return
+	}
+
+	rowsAffected, err := utils.InsertToTable(tableName, columns, values)
 
 	if err != nil {
 		sendErrorResponse(context, err)
 		return
 	}
 
-	timesheets, err := parseRows(rows)
-
-	if err != nil {
-		sendErrorResponse(context, err)
-		return
-	}
-
-	sendQuerySuccessResponse(context, timesheets)
+	sendExecSuccessResponse(context, rowsAffected)
 }
 
 func getTimesheet(context *gin.Context) {
@@ -47,21 +46,22 @@ func getTimesheet(context *gin.Context) {
 	sendQuerySuccessResponse(context, timesheets)
 }
 
-func addTimesheets(context *gin.Context) {
-	values := parseRequestBodyForInsertValues(context)
-
-	if values == "" {
-		return
-	}
-
-	rowsAffected, err := utils.InsertToTable(tableName, columns, values)
+func getTimesheets(context *gin.Context) {
+	rows, err := utils.SelectFromTable(tableName, "*", "")
 
 	if err != nil {
 		sendErrorResponse(context, err)
 		return
 	}
 
-	sendExecSuccessResponse(context, rowsAffected)
+	timesheets, err := parseRows(rows)
+
+	if err != nil {
+		sendErrorResponse(context, err)
+		return
+	}
+
+	sendQuerySuccessResponse(context, timesheets)
 }
 
 func removeTimesheets(context *gin.Context) {

@@ -25,10 +25,10 @@ func addRowToTimesheet(context *gin.Context) {
 	sendExecSuccessResponse(context, rowsAffected)
 }
 
-func getRowByTimesheet(context *gin.Context) {
+func getRow(context *gin.Context) {
 	id := context.Param("id")
 
-	condition := fmt.Sprintf("timesheet_id=%s", id)
+	condition := fmt.Sprintf("row_id=%s", id)
 
 	rows, err := utils.SelectFromTable(tableName, "*", condition)
 
@@ -47,10 +47,10 @@ func getRowByTimesheet(context *gin.Context) {
 	sendQuerySuccessResponse(context, timesheetRows)
 }
 
-func getRow(context *gin.Context) {
+func getRowByTimesheet(context *gin.Context) {
 	id := context.Param("id")
 
-	condition := fmt.Sprintf("row_id=%s", id)
+	condition := fmt.Sprintf("timesheet_id=%s", id)
 
 	rows, err := utils.SelectFromTable(tableName, "*", condition)
 
@@ -108,16 +108,6 @@ func removeRowByIds(context *gin.Context) {
 	}
 
 	sendExecSuccessResponse(context, rowsAffected)
-}
-
-func createUpdateColumns(timesheetRow TimesheetRow) string {
-	return fmt.Sprintf(
-		"row_description='%s', row_start_time=%d, row_end_time=%d, row_elapsed_time=%d",
-		timesheetRow.Description,
-		timesheetRow.StartTime,
-		timesheetRow.EndTime,
-		timesheetRow.ElapsedTime,
-	)
 }
 
 func updateRowInTimesheet(context *gin.Context) {

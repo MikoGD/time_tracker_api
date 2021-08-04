@@ -32,6 +32,16 @@ func createExecSuccessResponse(count int64) TimesheetRowsSuccessReponse {
 	return TimesheetRowsSuccessReponse{count, make([]TimesheetRow, 0)}
 }
 
+func createUpdateColumns(timesheetRow TimesheetRow) string {
+	return fmt.Sprintf(
+		"row_description='%s', row_start_time=%d, row_end_time=%d, row_elapsed_time=%d",
+		timesheetRow.Description,
+		timesheetRow.StartTime,
+		timesheetRow.EndTime,
+		timesheetRow.ElapsedTime,
+	)
+}
+
 func createQuerySuccessResponse(timesheetRows []TimesheetRow) TimesheetRowsSuccessReponse {
 	return TimesheetRowsSuccessReponse{int64(len(timesheetRows)), timesheetRows}
 }
